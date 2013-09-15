@@ -3,8 +3,9 @@ package com.example
 import akka.actor.{ActorSystem, Props}
 import akka.io.IO
 import spray.can.Http
+import scala.util.Try
 
-object Boot extends App {
+object Server extends App {
 
   // we need an ActorSystem to host our application in
   implicit val system = ActorSystem("on-spray-can")
@@ -13,5 +14,5 @@ object Boot extends App {
   val service = system.actorOf(Props[MyServiceActor], "demo-service")
 
   // start a new HTTP server on port 8080 with our service actor as the handler
-  IO(Http) ! Http.Bind(service, interface = "localhost", port = 8080)
+  IO(Http) ! Http.Bind(service, interface = "localhost", port = Try(args(0).toInt).getOrElse(8080))
 }
